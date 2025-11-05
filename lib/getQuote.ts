@@ -1,19 +1,26 @@
-import Quote from "../src/app/model/Quote";
-import { connectToDatabase } from "./db";
+// src/lib/getQuote.ts
+export async function getQuote() {
+  try {
+    const res = await fetch("https://zenquotes.io/api/random", {
+      cache: "no-store",
+      // add this if you're on Node 18+ to prevent SSL issues
+      // agent: new (require("https").Agent)({ rejectUnauthorized: false }),
+    });
+    if (!res.ok) throw new Error("Failed to fetch quote");
 
-// Fetch latest quotes
-export async function getQuotes(limit = 20) {
-  await connectToDatabase();
-  const quotes = await Quote.find().sort({ createdAt: -1 }).limit(limit);
-  return quotes;
-}
+    const data = await res.json();
+    const quoteData = Array.isArray(data) ? data[0] : data;
 
-// Add a new quote
-export async function addQuote(text: string, author?: string) {
-  await connectToDatabase();
-  const newQuote = await Quote.create({
-    text,
-    author: author || "Unknown",
-  });
-  return newQuote;
+    return {
+      text: quoteData.q || "The unexamined life is not worth living.",
+      author: quoteData.a || "Socrates",
+    };
+  } catch (error) {
+    console.error("Error fetching quote:", error);
+    // fallback quote
+    return {
+      text: "The unexamined life is not worth living.",
+      author: "Socrates",
+    };
+  }
 }
