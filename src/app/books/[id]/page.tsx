@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function getBookDetails(id: string) {
@@ -12,9 +13,9 @@ async function getBookDetails(id: string) {
 export default async function BookDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const bookData = await getBookDetails(id);
 
   if (!bookData) return notFound();
@@ -24,14 +25,16 @@ export default async function BookDetailsPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white px-6 py-12">
+    <div className="min-h-screen bg-linear-to-b from-amber-50 to-white px-6 py-12">
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row items-start gap-8">
           {cover ? (
-            <img
+            <Image
               src={cover}
               alt={bookData.title}
               className="w-full md:w-1/3 rounded-xl shadow-md"
+              width={300}
+              height={400}
             />
           ) : (
             <div className="w-full md:w-1/3 h-80 bg-amber-100 flex items-center justify-center text-amber-700 font-medium rounded-xl shadow-md">

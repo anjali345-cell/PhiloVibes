@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Background from "../../components/Background";
 
 export default function HomePage() {
-  const [quote, setQuote] = useState({ text: "", author: "" });
+  const [quote, setQuote] = useState({
+    text: "The unexamined life is not worth living.",
+    author: "Socrates",
+  });
 
   const fetchQuote = async () => {
     try {
@@ -20,10 +23,6 @@ export default function HomePage() {
       });
     }
   };
-
-  useEffect(() => {
-    fetchQuote();
-  }, []);
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden text-center text-white">
